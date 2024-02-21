@@ -10,15 +10,11 @@ const model = ref([
   },
   {
     label: 'Tasks',
-    items: [
-      { label: 'SteadyState', icon: 'pi pi-fw', to: '/steadyState' },
-    ]
+    items: [{ label: 'SteadyState', icon: 'pi pi-fw', to: '/steadyState' }]
   },
   {
     label: 'About',
-    items: [
-      { label: 'About', icon: 'pi pi-fw pi-id-card', to: '/about' },
-    ]
+    items: [{ label: 'About', icon: 'pi pi-fw pi-id-card', to: '/about' }]
   }
 ])
 </script>

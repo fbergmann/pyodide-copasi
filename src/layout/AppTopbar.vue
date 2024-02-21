@@ -7,7 +7,6 @@ const { layoutConfig, onMenuToggle } = useLayout()
 const logoUrl = computed(() => {
   return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`
 })
-
 </script>
 
 <template>
@@ -20,7 +19,6 @@ const logoUrl = computed(() => {
     <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
       <i class="pi pi-bars"></i>
     </button>
-
   </div>
 </template>
 
