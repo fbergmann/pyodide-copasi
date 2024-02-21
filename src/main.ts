@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+import pyodide_plugin from './pyodide'
+
 import PrimeVue from 'primevue/config'
 import AutoComplete from 'primevue/autocomplete'
 import Accordion from 'primevue/accordion'
@@ -103,11 +105,10 @@ import VirtualScroller from 'primevue/virtualscroller'
 import '@/assets/styles.scss'
 
 const app = createApp(App)
-
-app.use(router)
-
 app.use(router)
 app.use(PrimeVue, { ripple: true })
+app.use(pyodide_plugin, [document])
+
 app.use(ToastService)
 app.use(DialogService)
 app.use(ConfirmationService)
