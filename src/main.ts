@@ -102,6 +102,9 @@ import TreeTable from 'primevue/treetable'
 import TriStateCheckbox from 'primevue/tristatecheckbox'
 import VirtualScroller from 'primevue/virtualscroller'
 
+/* @ts-ignore */
+import Markdown from 'vue3-markdown-it';
+
 import '@/assets/styles.scss'
 
 const app = createApp(App)
@@ -112,6 +115,7 @@ app.use(pyodide_plugin, [document])
 app.use(ToastService)
 app.use(DialogService)
 app.use(ConfirmationService)
+app.use(Markdown)
 
 app.directive('tooltip', Tooltip)
 app.directive('badge', BadgeDirective)

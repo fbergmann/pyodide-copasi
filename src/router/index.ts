@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import AppLayout from '@/layout/AppLayout.vue'
-import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -12,23 +11,17 @@ const router = createRouter({
         {
           path: '/',
           name: 'home',
-          component: HomeView
-        },
-        {
-          path: '/about',
-          name: 'about',
-          // route level code-splitting
-          // this generates a separate chunk (About.[hash].js) for this route
-          // which is lazy-loaded when the route is visited.
-          component: () => import('../views/AboutView.vue')
+          component: () => import('@/components/Landing.vue')
         },
         {
           path: '/steadyState',
-          name: 'SteadyState',
-          // route level code-splitting
-          // this generates a separate chunk (About.[hash].js) for this route
-          // which is lazy-loaded when the route is visited.
+          name: 'Steady State',
           component: () => import('@/components/tasks/SteadyState.vue')
+        },
+        {
+          path: '/timeCourse',
+          name: 'Time Course',
+          component: () => import('@/components/tasks/TimeCourse.vue')
         },
         {
           path: '/species',

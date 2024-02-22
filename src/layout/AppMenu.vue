@@ -20,11 +20,27 @@ const model = ref([
   },
   {
     label: 'Tasks',
-    items: [{ label: 'SteadyState', icon: 'pi pi-fw', to: '/steadyState' }]
+    items: [
+      { label: 'Time Course', icon: 'pi pi-fw', to: '/timeCourse' },
+      { label: 'Steady State', icon: 'pi pi-fw', to: '/steadyState' }
+    ]
   },
   {
-    label: 'About',
-    items: [{ label: 'About', icon: 'pi pi-fw pi-id-card', to: '/about' }]
+    label: 'Get Started',
+    items: [
+      {
+        label: 'COPASI Home',
+        icon: 'pi pi-fw pi-question',
+        url: 'https://copasi.org',
+        target: '_blank'
+      },
+      {
+        label: 'View Source',
+        icon: 'pi pi-fw pi-search',
+        url: 'https://github.com/copasi/copasi',
+        target: '_blank'
+      }
+    ]
   }
 ])
 </script>
