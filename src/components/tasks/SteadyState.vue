@@ -17,7 +17,7 @@ const runSteadyState = () => {
       <div class="card p-fluid">
         <h5>Steady State</h5>
         <template v-if="state?.steadyStateSettings == null">
-        <p>Pyodide loading ...</p>
+          <p>Pyodide loading ...</p>
         </template>
       </div>
       <template v-if="state?.steadyStateSettings != null">

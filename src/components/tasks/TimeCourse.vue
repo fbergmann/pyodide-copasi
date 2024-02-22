@@ -16,23 +16,25 @@ const updatePlotFromResults = (results: TimeCourseResult | null) => {
     var trace = {
       x: results.columns[0],
       y: results.columns[i],
-      type: "scatter",
+      type: 'scatter',
       name: results.titles[i]
-    };
+    }
     /* @ts-ignore */
-    traces.push(trace);
-  }  
+    traces.push(trace)
+  }
   return traces
 }
-
 
 const runTimeCourse = () => {
   if (state?.timeCourseSettings == null) return
   //console.log(state?.timeCourseSettings)
 
-  if (!state.timeCourseSettings.problem.AutomaticStepSize && state.timeCourseSettings.problem?.StepSize != 0)
-  {
-    state.timeCourseSettings.problem.StepNumber = state.timeCourseSettings.problem.Duration / state.timeCourseSettings.problem.StepSize;
+  if (
+    !state.timeCourseSettings.problem.AutomaticStepSize &&
+    state.timeCourseSettings.problem?.StepSize != 0
+  ) {
+    state.timeCourseSettings.problem.StepNumber =
+      state.timeCourseSettings.problem.Duration / state.timeCourseSettings.problem.StepSize
   }
 
   stateService.simulateModel(state, window)
@@ -55,7 +57,7 @@ const methodNames = ref([
       <div class="card p-fluid">
         <h5>Time Course</h5>
         <template v-if="state?.steadyStateSettings == null">
-        <p>Pyodide loading ...</p>
+          <p>Pyodide loading ...</p>
         </template>
       </div>
       <template v-if="state?.timeCourseSettings != null">
@@ -116,9 +118,7 @@ const methodNames = ref([
           <h5>Results</h5>
           <div class="p-fluid formgrid grid">
             <div class="col-12">
-              <VuePlotly
-                :data="state.plotlyData"                
-              />
+              <VuePlotly :data="state.plotlyData" />
             </div>
           </div>
         </div>

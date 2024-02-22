@@ -106,8 +106,8 @@ export interface State {
   units: ModelUnits | null
   timeCourseResult: TimeCourseResult | null
   steadyStateResult: any
-  selectionList: Array<string> | null,
-  modelImage: string,
+  selectionList: Array<string> | null
+  modelImage: string
   modelDescription: string
   plotlyData: any
 }

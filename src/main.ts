@@ -103,7 +103,7 @@ import TriStateCheckbox from 'primevue/tristatecheckbox'
 import VirtualScroller from 'primevue/virtualscroller'
 
 /* @ts-ignore */
-import Markdown from 'vue3-markdown-it';
+import Markdown from 'vue3-markdown-it'
 
 import '@/assets/styles.scss'
 

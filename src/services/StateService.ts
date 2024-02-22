@@ -73,11 +73,10 @@ export default class StateService {
     window.selectionList = state.selectionList
 
     state.pyodide.runPython(simulate_model)
-   
+
     state.timeCourseResult = JSON.parse(state.pyodide.globals.get('time_course_result'))
     state.timeCourseSettings = JSON.parse(state.pyodide.globals.get('time_course_settings'))
   }
-
 }
 
 export const stateService = new StateService()

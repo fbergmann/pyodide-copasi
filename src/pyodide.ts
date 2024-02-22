@@ -29,7 +29,7 @@ function install(app: App, options: Array<any>) {
     events: null,
     steadyStateSettings: null,
     timeCourseSettings: null,
-    units: null, 
+    units: null,
     timeCourseResult: null,
     steadyStateResult: null,
     selectionList: null,
