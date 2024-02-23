@@ -28,7 +28,7 @@ const filters1 = ref(null)
 const loading1 = ref(null)
 
 const initFilters1 = () => {
-  console.log(state?.parameters)
+  //console.log(state?.parameters)
 
   filters1.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },

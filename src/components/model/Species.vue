@@ -11,7 +11,7 @@ const loading1 = ref(null)
 const types = ref(['fixed', 'assignment', 'ode', 'reactions'])
 
 const initFilters1 = () => {
-  console.log(state?.species)
+  //console.log(state?.species)
 
   filters1.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },

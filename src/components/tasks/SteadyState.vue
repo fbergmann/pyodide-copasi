@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue'
 import type { State, SteadyStateSettings } from '../Types'
+import stateService from '@/services/StateService'
+import Textarea from 'primevue/textarea'
 
 const state: State | undefined = inject('$state')
 
 const runSteadyState = () => {
   if (state?.steadyStateSettings == null) return
-  const settings: SteadyStateSettings = state?.steadyStateSettings
-  console.log(settings)
+  state.steadyStateResult = null
+  stateService.runSteadyState(state, window)
 }
 </script>
 
@@ -81,29 +83,117 @@ const runSteadyState = () => {
           </div>
         </div>
 
-        <div class="card">
-          <h5>Results</h5>
-          <TabView>
-            <TabPanel header="Species">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-            <TabPanel header="Compartments">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-            <TabPanel header="Model Quantities">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-            <TabPanel header="Reactions">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-            <TabPanel header="Stability">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-            <TabPanel header="Protocoll">
-              <p class="line-height-3 m-0"></p>
-            </TabPanel>
-          </TabView>
-        </div>
+        <template v-if="state?.steadyStateResult != null">
+          <div class="card">
+            <h5>Results</h5>
+            <p>{{ state.steadyStateResult.status }}</p>
+            <TabView>
+              <template
+                v-if="
+                  state.steadyStateResult.species != null &&
+                  state.steadyStateResult.species.length > 0
+                "
+              >
+                <TabPanel header="Species">
+                  <DataTable :value="state.steadyStateResult.species">
+                    <Column field="name" header="Name" :sortable="true" />
+                    <Column field="concentration" :sortable="true">
+                      <template #header>
+                        <span class="name">
+                          Concentration [{{ state.units?.quantity_unit }}/{{
+                            state.units?.volume_unit
+                          }}]</span
+                        >
+                      </template>
+                    </Column>
+                    <Column field="rate" :sortable="true">
+                      <template #header>
+                        <span class="name">
+                          Rate [{{ state.units?.quantity_unit }}/({{ state.units?.time_unit }}*{{
+                            state.units?.volume_unit
+                          }})]</span
+                        >
+                      </template>
+                    </Column>
+                    <Column field="type" header="Type" :sortable="true" />
+                  </DataTable>
+                </TabPanel>
+              </template>
+              <template
+                v-if="
+                  state.steadyStateResult.compartments != null &&
+                  state.steadyStateResult.compartments.length > 0
+                "
+              >
+                <TabPanel header="Compartments">
+                  <DataTable :value="state.steadyStateResult.compartments" itemid="name">
+                    <Column field="name" header="Name" :sortable="true" />
+                    <Column field="size" :sortable="true">
+                      <template #header>
+                        <span class="name"> Volume [{{ state.units?.volume_unit }}]</span>
+                      </template>
+                    </Column>
+                    <Column field="rate" :sortable="true">
+                      <template #header>
+                        <span class="name">
+                          Rate [{{ state.units?.volume_unit }}/{{ state.units?.time_unit }}]</span
+                        >
+                      </template>
+                    </Column>
+                    <Column field="type" header="Type" :sortable="true" />
+                  </DataTable>
+                </TabPanel>
+              </template>
+              <template
+                v-if="
+                  state.steadyStateResult.parameters != null &&
+                  state.steadyStateResult.parameters.length > 0
+                "
+              >
+                <TabPanel header="Model Quantities">
+                  <DataTable :value="state.steadyStateResult.parameters" itemid="name">
+                    <Column field="name" header="Name" :sortable="true" />
+                    <Column field="value" header="Value" :sortable="true" />
+                    <Column field="rate" header="Rate" :sortable="true" />
+                    <Column field="type" header="Type" :sortable="true" />
+                  </DataTable>
+                </TabPanel>
+              </template>
+              <template
+                v-if="
+                  state.steadyStateResult.reactions != null &&
+                  state.steadyStateResult.reactions.length > 0
+                "
+              >
+                <TabPanel header="Reactions">
+                  <DataTable :value="state.steadyStateResult.reactions" itemid="name">
+                    <Column field="name" header="Name" :sortable="true" />
+                    <Column field="flux" header="Flux" :sortable="true" />
+                    <Column field="scheme" header="Reaction" :sortable="true" />
+                  </DataTable>
+                </TabPanel>
+              </template>
+              <template v-if="state.steadyStateSettings.problem.StabilityAnalysisRequested">
+                <TabPanel header="Stability">
+                  <Textarea
+                    v-model="state.steadyStateResult.stability"
+                    :rows="35"
+                    style="width: 100%"
+                    :readonly="true"
+                  />
+                </TabPanel>
+              </template>
+              <TabPanel header="Protocol">
+                <Textarea
+                  v-model="state.steadyStateResult.protocol"
+                  :rows="20"
+                  style="width: 100%"
+                  :readonly="true"
+                />
+              </TabPanel>
+            </TabView>
+          </div>
+        </template>
       </template>
     </div>
   </div>

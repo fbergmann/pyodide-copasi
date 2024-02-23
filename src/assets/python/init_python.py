@@ -57,3 +57,4 @@ steady_state_settings = _to_js(basico.get_task_settings(basico.T.STEADY_STATE))
 units = _to_js(basico.get_model_units())
 
 time_course_result = None
+steady_state_result = None

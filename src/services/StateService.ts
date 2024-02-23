@@ -2,6 +2,7 @@ import type { State } from '../components/Types'
 
 import load_model from '../assets/python/load_model.py?raw'
 import simulate_model from '../assets/python/simulate_model.py?raw'
+import steady_steate from '../assets/python/steady_state.py?raw'
 
 export default class StateService {
   /**
@@ -58,6 +59,24 @@ export default class StateService {
 
     state.sbml = state.pyodide.globals.get('sbml')
     state.copasi = state.pyodide.globals.get('copasi')
+  }
+
+  public static runSteadyState(state: State, window: Window) {
+    if (!state.pyodide) {
+      return
+    }
+
+    /* @ts-ignore */
+    window.steadyStateSettings = JSON.stringify(state.steadyStateSettings)
+    /* @ts-ignore */
+    window.steadyStateResult = null
+    /* @ts-ignore */
+    window.selectionList = state.selectionList
+
+    state.pyodide.runPython(steady_steate)
+
+    state.steadyStateResult = JSON.parse(state.pyodide.globals.get('steady_state_result'))
+    state.steadyStateSettings = JSON.parse(state.pyodide.globals.get('steady_state_settings'))
   }
 
   public static simulateModel(state: State, window: Window) {

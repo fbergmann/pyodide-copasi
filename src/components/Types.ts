@@ -82,6 +82,18 @@ export interface TimeCourseResult {
   columns: Array<Array<number>>
 }
 
+export interface SteadyStateResult {
+  status: string
+  protocol: string
+  stability: string
+  species: object[]
+  compartments: object[]
+  parameters: object[]
+  reactions: object[]
+  jacobian: object
+  reduced_jacobian: object
+}
+
 export interface State {
   pyodide: {
     loadPackage(packages: Array<String>): void
@@ -105,7 +117,7 @@ export interface State {
   timeCourseSettings: TimeCourseSettings | null
   units: ModelUnits | null
   timeCourseResult: TimeCourseResult | null
-  steadyStateResult: any
+  steadyStateResult: SteadyStateResult | null
   selectionList: Array<string> | null
   modelImage: string
   modelDescription: string

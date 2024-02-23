@@ -265,9 +265,15 @@ const diseaseModels = ref([
               customUpload
             >
               <template #empty>
-                <p>Drag and drop files to here.</p>
+                <p>Drag and drop files here.</p>
               </template>
             </FileUpload>
+          </div>
+          <div class="col-12">
+            <p>
+              The disease models come from
+              <a href="https://dismolib.uvadcos.io" target="_blank">dismolib</a>.
+            </p>
           </div>
         </div>
       </div>

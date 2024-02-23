@@ -48,7 +48,7 @@ function install(app: App, options: Array<any>) {
       // load pandas lib
       if (state.pyodide) {
         // @ts-ignore : global loadPackage
-        await state.pyodide.loadPackage(['copasi-basico', 'simplejson'])
+        await state.pyodide.loadPackage(['copasi-basico', 'simplejson', 'sympy'])
         // @ts-ignore : global runPythonAsync
         await state.pyodide.runPythonAsync(init_python)
         stateService.updateModelFromState(state)

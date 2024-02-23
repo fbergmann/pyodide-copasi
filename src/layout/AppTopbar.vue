@@ -2,10 +2,12 @@
 import { computed } from 'vue'
 import { useLayout } from '@/layout/composables/layout'
 
-const { layoutConfig, onMenuToggle } = useLayout()
+//const { layoutConfig, onMenuToggle } = useLayout()
+const { onMenuToggle } = useLayout()
 
 const logoUrl = computed(() => {
-  return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`
+  //return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`
+  return 'layout/images/COPASI.png'
 })
 </script>
 
@@ -13,7 +15,7 @@ const logoUrl = computed(() => {
   <div class="layout-topbar">
     <router-link to="/" class="layout-topbar-logo">
       <img :src="logoUrl" alt="logo" />
-      <span>SAKAI</span>
+      <span>COPASI Vue3</span>
     </router-link>
 
     <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">

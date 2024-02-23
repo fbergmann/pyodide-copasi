@@ -70,3 +70,4 @@ except:
     copasi = None
 
 time_course_result = None
+steady_state_result = None

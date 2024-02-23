@@ -34,19 +34,15 @@ def _replace_undercores_with_spaces(d):
     if isinstance(d, list):
         for i in range(len(d)):
             if isinstance(d[i], dict):
-                _replace_undercores_with_spaces(d[i])
-        return 
+                d[i] = _replace_undercores_with_spaces(d[i])
+        return d
     
     for key in list(d.keys()):
-        # ignore it if the key does not start with an upper case
-        if not key[0].isupper():
-            continue
-
-        new_key = key.replace('_', ' ')
+        new_key = key.replace('_', ' ') if key[0].isupper() else key
         if new_key != key:
             d[new_key] = d.pop(key)
         if isinstance(d[new_key], dict):
-            _replace_undercores_with_spaces(d[new_key])
+            d[new_key] = _replace_undercores_with_spaces(d[new_key])
     
     return d
 

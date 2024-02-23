@@ -9,7 +9,7 @@ const filters1 = ref(null)
 const loading1 = ref(null)
 
 const initFilters1 = () => {
-  console.log(state?.compartments)
+  //console.log(state?.compartments)
   filters1.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: {
