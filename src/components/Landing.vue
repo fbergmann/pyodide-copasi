@@ -39,20 +39,21 @@ const loadDiseaseModel = (model: string) => {
   state.modelImage = ''
   state.modelDescription = ''
 
-  //console.log('Loading model: ' + model)
-
   fetch(`${baseUrl}diseaseModels/${model}.cps`)
     .then((response) => response.text())
     .then((mdata) => {
+      // loading the model might take a while 
       stateService.loadModelFromContent(state, window, mdata)
+      
+      // reset caption and image
+      fetch(`${baseUrl}diseaseModels/captions/${model}.md`)
+        .then((response) => response.text())
+        .then((data) => {
+          state.modelImage = `${baseUrl}diseaseModels/images/${model}.png`
+          state.modelDescription = data
+        })
     })
 
-  fetch(`${baseUrl}diseaseModels/captions/${model}.md`)
-    .then((response) => response.text())
-    .then((data) => {
-      state.modelImage = `${baseUrl}diseaseModels/images/${model}.png`
-      state.modelDescription = data
-    })
 }
 
 const diseaseModels = ref([
