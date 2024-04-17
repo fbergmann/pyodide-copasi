@@ -7,6 +7,45 @@ import stateService from '@/services/StateService'
 /* @ts-ignore */
 import Markdown from 'vue3-markdown-it'
 
+const sbmlExport = ref([
+    {
+        label: 'Level 3 Version 1',
+        command: () => {
+            exportSbmlLV(3, 1)
+        }
+    },
+    {
+      label: 'Level 3 Version 2',
+      command: () => {
+            exportSbmlLV(3, 2)
+        }
+    },
+    {
+        separator: true
+    },
+    {
+      label: 'Level 2 Version 4',
+      command: () => {
+            exportSbmlLV(2, 4)
+        }
+    },
+    {
+      label: 'Level 2 Version 1',
+      command: () => {
+            exportSbmlLV(2, 1)
+        }
+    },
+    {
+        separator: true
+    },
+    {
+      label: 'Level 1 Version 2',
+      command: () => {
+            exportSbmlLV(1, 2)
+        }
+    }
+]);
+
 const state: State | undefined = inject('$state')
 
 const baseUrl = import.meta.env.BASE_URL
@@ -30,6 +69,65 @@ const loadFile = (files: Array<File>) => {
   }
   reader.readAsText(file)
 }
+
+const exportCopasi = () => 
+{
+  if (state?.copasi == null) {
+    return
+  }
+
+  const blob = new Blob([state.copasi], { type: 'application/x-copasi' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  a.setAttribute('download', state.modelName +'.cps')
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+
+}
+
+const exportSBML = () =>
+{
+  if (state?.sbml == null) {
+    return
+  }
+
+  const blob = new Blob([state.sbml], { type: 'application/sbml+xml' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  a.setAttribute('download', state.modelName +'.xml')
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
+
+const exportSbmlLV = (level: number, version:number) =>
+{
+  if (state?.pyodide == null) {
+    return
+  }
+
+  const model : string = stateService.exportSBML(state, window, level, version)
+
+  const blob = new Blob([model], { type: 'application/sbml+xml' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  // create filename including sbml.modelName + Level + Version converting 
+  // level and version to string
+  const filename = state.modelName + '_L' + level.toString() + 'V' + version.toString() + '.xml'
+  a.setAttribute('download', filename)
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
 
 const loadDiseaseModel = (model: string) => {
   if (state == null) {
@@ -243,6 +341,13 @@ const diseaseModels = ref([
           <template v-if="state.modelDescription != ''">
             <Markdown :source="state.modelDescription" />
           </template>
+
+          <div class="col-12">
+          <span class="p-buttonset">
+              <Button icon="pi pi-arrow-circle-down" title="Download current COPASI file" label="COPASI" class="mr-2 mb-2" @click="exportCopasi()"> </Button>
+              <SplitButton icon="pi pi-arrow-circle-down" :model="sbmlExport" title="Download current file as SBML" label="SBML" class="p-button-secondary mr-2 mb-2" @click="exportSBML()"></SplitButton> 
+            </span>
+          </div>
         </div>
       </div>
 

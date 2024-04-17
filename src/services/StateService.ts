@@ -3,6 +3,7 @@ import type { State } from '../components/Types'
 import load_model from '../assets/python/load_model.py?raw'
 import simulate_model from '../assets/python/simulate_model.py?raw'
 import steady_steate from '../assets/python/steady_state.py?raw'
+import export_current_as_sbml from '../assets/python/export_current_as_sbml.py?raw'
 
 export default class StateService {
   /**
@@ -41,6 +42,21 @@ export default class StateService {
     state.modelImage = ''
     state.plotlyData = null
     state.timeCourseResult = null
+  }
+
+  public static exportSBML(state: State, window: Window, level : number,version:number) {
+    if (!state.pyodide) {
+      return
+    }
+
+    /* @ts-ignore */
+    window.sbml_export_version = version
+    /* @ts-ignore */
+    window.sbml_export_level = level
+
+    state.pyodide.runPython(export_current_as_sbml)
+
+    return state.pyodide.globals.get('sbml_export')
   }
 
   public static loadModelFromContent(state: State, window: Window, content: string) {
