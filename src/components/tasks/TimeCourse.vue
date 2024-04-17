@@ -42,6 +42,20 @@ const runTimeCourse = () => {
   state.plotlyData = updatePlotFromResults(state.timeCourseResult)
 }
 
+const downloadTimeCourseResults = () => {
+  if (state?.time_course_csv == null) return
+
+  const blob = new Blob([state.time_course_csv], { type: 'text/csv' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  a.setAttribute('download', 'time_course_results.csv')
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
 const methodNames = ref([
   'Deterministic (LSODA)',
   'Deterministic (RADAU5)',
@@ -109,7 +123,7 @@ const methodNames = ref([
               <Button label="Run Task" class="mr-2 mb-1" @click="runTimeCourse()" />
             </div>
             <div class="col-12 md:col-5">
-              <Button label="Download Results" class="p-button-secondary mr-2 mb-1" />
+              <Button label="Download Results" class="p-button-secondary mr-2 mb-1" @click="downloadTimeCourseResults()" />
             </div>
           </div>
         </div>

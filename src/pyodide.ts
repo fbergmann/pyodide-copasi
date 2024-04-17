@@ -19,7 +19,7 @@ function install(app: App, options: Array<any>) {
     errorMsg: null,
     sbml: null,
     copasi: null,
-    csv: null,
+    time_course_csv: null,
     runningSimulation: false,
     modelName: 'none',
     compartments: null,

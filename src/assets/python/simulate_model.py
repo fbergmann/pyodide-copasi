@@ -79,3 +79,4 @@ else:
 
 time_course_result = _transform_result_to_js(df)
 time_course_settings = _to_js(basico.get_task_settings(basico.T.TIME_COURSE))
+time_course_csv = df.to_csv(index=False)

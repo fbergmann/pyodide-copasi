@@ -95,6 +95,7 @@ export default class StateService {
 
     state.timeCourseResult = JSON.parse(state.pyodide.globals.get('time_course_result'))
     state.timeCourseSettings = JSON.parse(state.pyodide.globals.get('time_course_settings'))
+    state.time_course_csv = state.pyodide.globals.get('time_course_csv')
   }
 }
 

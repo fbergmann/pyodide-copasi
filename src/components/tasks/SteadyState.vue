@@ -11,6 +11,60 @@ const runSteadyState = () => {
   state.steadyStateResult = null
   stateService.runSteadyState(state, window)
 }
+
+const species_table: any | undefined = ref(null);
+const reactions_table: any | undefined = ref(null);
+const compartment_table: any | undefined = ref(null);
+const parameter_table: any | undefined = ref(null);
+
+
+const exportTable = (ref_table : any) => {
+  if (ref_table.value == null) return
+  ref_table.value.exportCSV()
+}
+
+const exportSpecies = () => {
+  exportTable(species_table)
+}
+
+const exportReactions = () => {
+  exportTable(reactions_table)
+}
+
+const exportCompartments = () => {
+  exportTable(compartment_table)
+}
+
+const exportParameters = () => {
+  exportTable(parameter_table)
+}
+
+const exportStability = () => {
+  if (state?.steadyStateResult == null) return
+  const blob = new Blob([state.steadyStateResult.stability], { type: 'text/plain' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  a.setAttribute('download', 'stability_results.txt')
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
+const exportProtocoll = () => {
+  if (state?.steadyStateResult == null) return
+  const blob = new Blob([state.steadyStateResult.protocol], { type: 'text/plain' })
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.setAttribute('hidden', '')
+  a.setAttribute('href', url)
+  a.setAttribute('download', 'protocol.txt')
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
 </script>
 
 <template>
@@ -78,7 +132,7 @@ const runSteadyState = () => {
               <Button label="Run Task" class="mr-2 mb-1" @click="runSteadyState()" />
             </div>
             <div class="col-12 md:col-5">
-              <Button label="Download Results" class="p-button-secondary mr-2 mb-1" />
+              
             </div>
           </div>
         </div>
@@ -95,7 +149,12 @@ const runSteadyState = () => {
                 "
               >
                 <TabPanel header="Species">
-                  <DataTable :value="state.steadyStateResult.species">
+                  <DataTable :value="state.steadyStateResult.species" ref="species_table">
+                    <template #header>
+                      <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportSpecies()" />
+                      </div>
+                    </template>
                     <Column field="name" header="Name" :sortable="true" />
                     <Column field="concentration" :sortable="true">
                       <template #header>
@@ -126,7 +185,12 @@ const runSteadyState = () => {
                 "
               >
                 <TabPanel header="Compartments">
-                  <DataTable :value="state.steadyStateResult.compartments" itemid="name">
+                  <DataTable :value="state.steadyStateResult.compartments" itemid="name" ref="compartment_table">
+                    <template #header>
+                      <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportCompartments()" />
+                      </div>
+                    </template>
                     <Column field="name" header="Name" :sortable="true" />
                     <Column field="size" :sortable="true">
                       <template #header>
@@ -151,7 +215,12 @@ const runSteadyState = () => {
                 "
               >
                 <TabPanel header="Model Quantities">
-                  <DataTable :value="state.steadyStateResult.parameters" itemid="name">
+                  <DataTable :value="state.steadyStateResult.parameters" itemid="name" ref="parameter_table">
+                    <template #header>
+                      <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportParameters()" />
+                      </div>
+                    </template>
                     <Column field="name" header="Name" :sortable="true" />
                     <Column field="value" header="Value" :sortable="true" />
                     <Column field="rate" header="Rate" :sortable="true" />
@@ -166,7 +235,12 @@ const runSteadyState = () => {
                 "
               >
                 <TabPanel header="Reactions">
-                  <DataTable :value="state.steadyStateResult.reactions" itemid="name">
+                  <DataTable :value="state.steadyStateResult.reactions" itemid="name" ref="reactions_table">
+                    <template #header>
+                      <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportReactions()" />
+                      </div>
+                    </template>
                     <Column field="name" header="Name" :sortable="true" />
                     <Column field="flux" header="Flux" :sortable="true" />
                     <Column field="scheme" header="Reaction" :sortable="true" />
@@ -175,6 +249,9 @@ const runSteadyState = () => {
               </template>
               <template v-if="state.steadyStateSettings.problem.StabilityAnalysisRequested">
                 <TabPanel header="Stability">
+                  <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportStability()" />
+                  </div>
                   <Textarea
                     v-model="state.steadyStateResult.stability"
                     :rows="35"
@@ -184,6 +261,9 @@ const runSteadyState = () => {
                 </TabPanel>
               </template>
               <TabPanel header="Protocol">
+                <div style="text-align: left">
+                        <Button icon="pi pi-external-link" label="Export" @click="exportProtocoll()" />
+                </div>
                 <Textarea
                   v-model="state.steadyStateResult.protocol"
                   :rows="20"

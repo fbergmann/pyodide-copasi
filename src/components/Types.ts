@@ -60,13 +60,6 @@ export interface SteadyStateSettings {
   }
 }
 
-export interface Csv {
-  selected?: Array<boolean>
-  columns: Array<string>
-  rows: Array<{ [key: string]: string }>
-  csv?: string
-}
-
 export interface ModelUnits {
   time_unit: string
   quantity_unit: string
@@ -105,7 +98,7 @@ export interface State {
   pyodideLoaded: boolean
   sbml: string | null
   copasi: string | null
-  csv: Csv | null
+  time_course_csv: string | null
   runningSimulation: boolean
   modelName: string
   compartments: any
