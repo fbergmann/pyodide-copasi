@@ -1,6 +1,62 @@
-# sakai-test
+# pyodide-copasi
 
-This template should help get you started developing with Vue 3 in Vite.
+This basic website demonstrates using COPASI with Pyodide and Vue3. 
+It uses the [sakai template](sakai.primevue.org/#/documentation). For the basic 
+setup you'd use: 
+
+```bash
+git clone https://github.com/fbergmann/pyodide-copasi
+cd pyodide-copasi
+npm i 
+```
+
+The special version of pyodide (that includes COPASI + basico) can be downloaded from the 
+release page. It has to be extracted as `./public/pyodide`. So assuming you are in the
+project directory:
+
+```bash
+cd public
+wget https://github.com/fbergmann/pyodide-copasi/releases/download/latest/pyodide.zip
+unzip pyodide.zip
+rm pyodide.zip
+cd ..
+```
+
+If you want to debug the page you run: 
+
+```bash
+npm run dev
+```
+
+to build the static HTML + javascript page you'd run: 
+
+```bash
+npm run build
+```
+
+This creates the `pyodide-copasi` directory with the latest version. This is the version deployed at: 
+
+<https://fbergmann.github.io/pyodide-copasi>
+
+To serve it locally you can just run: 
+
+```bash
+wget https://github.com/fbergmann/pyodide-copasi/releases/download/latest/pyodide-copasi.zip
+unzip pyodide-copasi.zip
+rm pyodide-copasi.zip
+python3 -m http.server
+```
+ 
+and access the page at <http://localhost:8000/pyodide-copasi>. 
+
+## Download the pre-built version
+You could also just download the latest `pyodide-copasi.zip` file extract it and have it served as installation: 
+
+```bash
+python3 -m http.server
+```
+
+I leave the automatically generated documentation from the template below: 
 
 ## Recommended IDE Setup
 
