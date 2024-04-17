@@ -1,3 +1,6 @@
+![GitHub Release](https://img.shields.io/github/v/release/fbergmann/pyodide-copasi)
+ ![GitHub License](https://img.shields.io/github/license/fbergmann/pyodide-copasi)
+
 # pyodide-copasi
 
 This basic website demonstrates using COPASI with Pyodide and Vue3. 
@@ -16,7 +19,7 @@ project directory:
 
 ```bash
 cd public
-wget https://github.com/fbergmann/pyodide-copasi/releases/download/latest/pyodide.zip
+wget https://github.com/fbergmann/pyodide-copasi/releases/download/v0.0.1/pyodide.zip
 unzip pyodide.zip
 rm pyodide.zip
 cd ..
@@ -41,7 +44,7 @@ This creates the `pyodide-copasi` directory with the latest version. This is the
 To serve it locally you can just run: 
 
 ```bash
-wget https://github.com/fbergmann/pyodide-copasi/releases/download/latest/pyodide-copasi.zip
+wget https://github.com/fbergmann/pyodide-copasi/releases/download/v0.0.1/pyodide-copasi.zip
 unzip pyodide-copasi.zip
 rm pyodide-copasi.zip
 python3 -m http.server

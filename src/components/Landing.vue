@@ -342,7 +342,7 @@ const diseaseModels = ref([
             <Markdown :source="state.modelDescription" />
           </template>
 
-          <div class="col-12">
+          <div class="col-12 md:col-6 lg:col-6">
           <span class="p-buttonset">
               <Button icon="pi pi-arrow-circle-down" title="Download current COPASI file" label="COPASI" class="mr-2 mb-2" @click="exportCopasi()"> </Button>
               <SplitButton icon="pi pi-arrow-circle-down" :model="sbmlExport" title="Download current file as SBML" label="SBML" class="p-button-secondary mr-2 mb-2" @click="exportSBML()"></SplitButton> 
