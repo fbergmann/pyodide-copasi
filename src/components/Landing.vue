@@ -366,7 +366,7 @@ const diseaseModels = ref([
               :auto="true"
               :showCancelButton="false"
               :showUploadButton="false"
-              :maxFileSize="1000000"
+              :maxFileSize="100000000"
               @uploader="onUpload"
               customUpload
             >
