@@ -1,0 +1,80 @@
+import basico
+import js
+import simplejson as json
+
+def _recursively_replace_spaces_with_underscores(d):
+    if isinstance(d, list):
+        for i in range(len(d)):
+            if isinstance(d[i], dict):
+                _recursively_replace_spaces_with_underscores(d[i])
+        return
+
+    for key in list(d.keys()):
+        new_key = key.replace(' ', '_')
+        if new_key != key:
+            d[new_key] = d.pop(key)
+        if isinstance(d[new_key], dict):
+            _recursively_replace_spaces_with_underscores(d[new_key])
+
+def _to_js(df):
+    if not isinstance(df, dict):
+        result_dict = basico.as_dict(df, fold_list=False) if df is not None else []
+    else:
+        result_dict = df
+
+    _recursively_replace_spaces_with_underscores(result_dict)
+    result_json = json.dumps(result_dict, indent=2, ignore_nan=True)
+    return result_json
+
+def _parse_assignments(assignments):
+    """Convert assignments from [{'target': x, 'expression': y}] to [(x, y)] for basico."""
+    if not assignments:
+        return []
+    result = []
+    for a in assignments:
+        if isinstance(a, dict):
+            target = a.get('target') or a.get('Target', '')
+            expr = a.get('expression') or a.get('Expression', '')
+            result.append((str(target), str(expr)))
+        elif isinstance(a, (list, tuple)) and len(a) >= 2:
+            result.append((str(a[0]), str(a[1])))
+    return result
+
+# Get event update from JS - list of events with modified values
+event_update_json = js.window.events_update
+
+if event_update_json:
+    event_update = json.loads(event_update_json)
+    if isinstance(event_update, list):
+        for item in event_update:
+            name = item.get('name')
+            if name:
+                kwargs = {}
+                if 'trigger' in item and item['trigger'] is not None:
+                    kwargs['trigger'] = str(item['trigger'])
+                if 'delay' in item:
+                    kwargs['delay'] = str(item['delay']) if item['delay'] is not None else ''
+                if 'priority' in item:
+                    kwargs['priority'] = str(item['priority']) if item['priority'] is not None else ''
+                if 'fire_at_initial_time' in item and item['fire_at_initial_time'] is not None:
+                    kwargs['fire_at_initial_time'] = bool(item['fire_at_initial_time'])
+                if 'persistent' in item and item['persistent'] is not None:
+                    kwargs['persistent'] = bool(item['persistent'])
+                if 'delay_calculation' in item and item['delay_calculation'] is not None:
+                    kwargs['delay_calculation'] = bool(item['delay_calculation'])
+                if 'assignments' in item and item['assignments'] is not None:
+                    parsed = _parse_assignments(item['assignments'])
+                    if parsed:
+                        kwargs['assignments'] = parsed
+
+                if kwargs:
+                    try:
+                        basico.set_event(name, **kwargs)
+                    except Exception as e:
+                        print('Error updating event', name, ':', str(e))
+
+# Refresh model state
+events = _to_js(basico.get_events())
+species = _to_js(basico.get_species())
+sbml = basico.save_model_to_string(type='sbml')
+copasi = basico.save_model_to_string()
