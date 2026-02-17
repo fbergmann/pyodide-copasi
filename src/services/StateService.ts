@@ -7,6 +7,7 @@ import export_current_as_sbml from '../assets/python/export_current_as_sbml.py?r
 import update_species from '../assets/python/update_species.py?raw'
 import update_compartments from '../assets/python/update_compartments.py?raw'
 import update_reactions from '../assets/python/update_reactions.py?raw'
+import update_parameters from '../assets/python/update_parameters.py?raw'
 
 export default class StateService {
   /**
@@ -119,6 +120,21 @@ export default class StateService {
     window.reactions_update = JSON.stringify(reactionsUpdate)
 
     state.pyodide.runPython(update_reactions)
+
+    this.updateModelFromState(state)
+    state.sbml = state.pyodide.globals.get('sbml')
+    state.copasi = state.pyodide.globals.get('copasi')
+  }
+
+  public static updateParameters(state: State, window: Window, parametersUpdate: object[]) {
+    if (!state.pyodide) {
+      return
+    }
+
+    /* @ts-ignore */
+    window.parameters_update = JSON.stringify(parametersUpdate)
+
+    state.pyodide.runPython(update_parameters)
 
     this.updateModelFromState(state)
     state.sbml = state.pyodide.globals.get('sbml')
