@@ -1,12 +1,47 @@
 <script setup>
 import { FilterMatchMode, FilterOperator } from 'primevue/api'
 import { ref, onBeforeMount, inject } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import stateService from '@/services/StateService'
 //import type { State } from '../Types';
 
 const state = inject('$state')
+const toast = useToast()
 
 const filters1 = ref(null)
 const loading1 = ref(null)
+const editDialogVisible = ref(false)
+const editingCompartment = ref(null)
+const saving = ref(false)
+
+const openEditDialog = (compartment) => {
+  editingCompartment.value = { ...compartment }
+  editDialogVisible.value = true
+}
+
+const closeEditDialog = () => {
+  editDialogVisible.value = false
+  editingCompartment.value = null
+}
+
+const saveCompartment = () => {
+  if (!editingCompartment.value || !state?.pyodide) return
+  saving.value = true
+  try {
+    stateService.updateCompartments(state, window, [editingCompartment.value])
+    toast.add({ severity: 'success', summary: 'Saved', detail: 'Compartment updated successfully', life: 3000 })
+    closeEditDialog()
+  } catch (err) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err instanceof Error ? err.message : 'Failed to update compartment',
+      life: 5000
+    })
+  } finally {
+    saving.value = false
+  }
+}
 
 const initFilters1 = () => {
   //console.log(state?.compartments)
@@ -94,7 +129,15 @@ onBeforeMount(() => {
               <template #loading> Loading compartment data. Please wait. </template>
               <Column field="name" header="Name" style="min-width: 12rem" :sortable="true">
                 <template #body="{ data }">
-                  {{ data.name }}
+                  <div class="flex align-items-center gap-2">
+                    <span>{{ data.name }}</span>
+                    <Button
+                      icon="pi pi-pencil"
+                      class="p-button-rounded p-button-text p-button-sm"
+                      v-tooltip.top="'Edit'"
+                      @click="openEditDialog(data)"
+                    />
+                  </div>
                 </template>
                 <template #filter="{ filterModel }">
                   <InputText
@@ -179,6 +222,54 @@ onBeforeMount(() => {
     <template v-else>
       <p>No compartments.</p>
     </template>
+
+    <Dialog
+      v-model:visible="editDialogVisible"
+      header="Edit Compartment"
+      :modal="true"
+      :style="{ width: '28rem' }"
+      :closable="!saving"
+      @hide="closeEditDialog"
+    >
+      <div v-if="editingCompartment" class="flex flex-column gap-3">
+        <div class="field">
+          <label for="edit-name">Name</label>
+          <InputText id="edit-name" v-model="editingCompartment.name" disabled class="w-full" />
+          <small class="text-color-secondary">Compartment name cannot be changed</small>
+        </div>
+        <div class="field">
+          <label for="edit-initial-size">Initial Size</label>
+          <InputNumber
+            id="edit-initial-size"
+            v-model="editingCompartment.initial_size"
+            mode="decimal"
+            :min-fraction-digits="0"
+            :max-fraction-digits="10"
+            class="w-full"
+          />
+        </div>
+        <div class="field">
+          <label for="edit-unit">Unit</label>
+          <InputText id="edit-unit" v-model="editingCompartment.unit" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="edit-type">Type</label>
+          <InputText id="edit-type" v-model="editingCompartment.type" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="edit-initial-expression">Initial Expression</label>
+          <InputText
+            id="edit-initial-expression"
+            v-model="editingCompartment.initial_expression"
+            class="w-full"
+          />
+        </div>
+      </div>
+      <template #footer>
+        <Button label="Cancel" class="p-button-outlined" :disabled="saving" @click="closeEditDialog" />
+        <Button label="Save" :loading="saving" @click="saveCompartment" />
+      </template>
+    </Dialog>
   </div>
 </template>
 
