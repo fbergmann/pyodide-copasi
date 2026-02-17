@@ -4,6 +4,7 @@ import load_model from '../assets/python/load_model.py?raw'
 import simulate_model from '../assets/python/simulate_model.py?raw'
 import steady_steate from '../assets/python/steady_state.py?raw'
 import export_current_as_sbml from '../assets/python/export_current_as_sbml.py?raw'
+import update_species from '../assets/python/update_species.py?raw'
 
 export default class StateService {
   /**
@@ -73,6 +74,21 @@ export default class StateService {
 
     this.updateModelFromState(state)
 
+    state.sbml = state.pyodide.globals.get('sbml')
+    state.copasi = state.pyodide.globals.get('copasi')
+  }
+
+  public static updateSpecies(state: State, window: Window, speciesUpdate: object[]) {
+    if (!state.pyodide) {
+      return
+    }
+
+    /* @ts-ignore */
+    window.species_update = JSON.stringify(speciesUpdate)
+
+    state.pyodide.runPython(update_species)
+
+    this.updateModelFromState(state)
     state.sbml = state.pyodide.globals.get('sbml')
     state.copasi = state.pyodide.globals.get('copasi')
   }

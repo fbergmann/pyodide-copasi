@@ -1,14 +1,56 @@
 <script setup>
 import { FilterMatchMode, FilterOperator } from 'primevue/api'
-import { ref, onBeforeMount, inject } from 'vue'
+import { ref, computed, onBeforeMount, inject } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import stateService from '@/services/StateService'
 //import type { State } from '../Types';
 
 const state = inject('$state')
+const toast = useToast()
+
+const compartmentOptions = computed(() => {
+  const c = state?.compartments
+  if (!c) return []
+  const arr = Array.isArray(c) ? c : [c]
+  return arr.map((x) => x?.name ?? x)
+})
 
 const filters1 = ref(null)
 const loading1 = ref(null)
+const editDialogVisible = ref(false)
+const editingSpecies = ref(null)
+const saving = ref(false)
 
 const types = ref(['fixed', 'assignment', 'ode', 'reactions'])
+
+const openEditDialog = (species) => {
+  editingSpecies.value = { ...species }
+  editDialogVisible.value = true
+}
+
+const closeEditDialog = () => {
+  editDialogVisible.value = false
+  editingSpecies.value = null
+}
+
+const saveSpecies = () => {
+  if (!editingSpecies.value || !state?.pyodide) return
+  saving.value = true
+  try {
+    stateService.updateSpecies(state, window, [editingSpecies.value])
+    toast.add({ severity: 'success', summary: 'Saved', detail: 'Species updated successfully', life: 3000 })
+    closeEditDialog()
+  } catch (err) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err instanceof Error ? err.message : 'Failed to update species',
+      life: 5000
+    })
+  } finally {
+    saving.value = false
+  }
+}
 
 const initFilters1 = () => {
   //console.log(state?.species)
@@ -109,7 +151,15 @@ onBeforeMount(() => {
               <template #loading> Loading species data. Please wait. </template>
               <Column field="name" header="Name" style="min-width: 12rem" :sortable="true">
                 <template #body="{ data }">
-                  {{ data.name }}
+                  <div class="flex align-items-center gap-2">
+                    <span>{{ data.name }}</span>
+                    <Button
+                      icon="pi pi-pencil"
+                      class="p-button-rounded p-button-text p-button-sm"
+                      v-tooltip.top="'Edit'"
+                      @click="openEditDialog(data)"
+                    />
+                  </div>
                 </template>
                 <template #filter="{ filterModel }">
                   <InputText
@@ -214,6 +264,71 @@ onBeforeMount(() => {
     <template v-else>
       <p>No species.</p>
     </template>
+
+    <Dialog
+      v-model:visible="editDialogVisible"
+      header="Edit Species"
+      :modal="true"
+      :style="{ width: '28rem' }"
+      :closable="!saving"
+      @hide="closeEditDialog"
+    >
+      <div v-if="editingSpecies" class="flex flex-column gap-3">
+        <div class="field">
+          <label for="edit-name">Name</label>
+          <InputText id="edit-name" v-model="editingSpecies.name" disabled class="w-full" />
+          <small class="text-color-secondary">Species name cannot be changed</small>
+        </div>
+        <div class="field">
+          <label for="edit-initial-concentration">Initial Concentration</label>
+          <InputNumber
+            id="edit-initial-concentration"
+            v-model="editingSpecies.initial_concentration"
+            mode="decimal"
+            :min-fraction-digits="0"
+            :max-fraction-digits="10"
+            class="w-full"
+          />
+        </div>
+        <div class="field">
+          <label for="edit-compartment">Compartment</label>
+          <Dropdown
+            id="edit-compartment"
+            v-model="editingSpecies.compartment"
+            :options="compartmentOptions"
+            placeholder="Select compartment"
+            class="w-full"
+            :show-clear="true"
+          />
+        </div>
+        <div class="field">
+          <label for="edit-unit">Unit</label>
+          <InputText id="edit-unit" v-model="editingSpecies.unit" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="edit-type">Type</label>
+          <Dropdown
+            id="edit-type"
+            v-model="editingSpecies.type"
+            :options="types"
+            placeholder="Select type"
+            class="w-full"
+          />
+        </div>
+        <div class="field">
+          <label for="edit-initial-expression">Initial Expression</label>
+          <InputText
+            id="edit-initial-expression"
+            v-model="editingSpecies.initial_expression"
+            class="w-full"
+          />
+        </div>
+      </div>
+      <template #footer>
+        <Button label="Cancel" class="p-button-outlined" :disabled="saving" @click="closeEditDialog" />
+        <Button label="Save" :loading="saving" @click="saveSpecies" />
+      </template>
+    </Dialog>
   </div>
 </template>
 
